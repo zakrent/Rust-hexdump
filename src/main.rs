@@ -1,3 +1,9 @@
+extern crate hexdump;
+
+use std::env;
+use hexdump::*;
+
 fn main() {
-    println!("Hello, world!");
+    let config = Config::new(env::args());
+    println!("{:?}",config); 
 }
