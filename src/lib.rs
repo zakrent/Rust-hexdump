@@ -9,7 +9,21 @@ pub struct Config{
     offset: u64,
 }
 
-impl Config{
+#[derive(Debug)]
+enum ConfigError{
+    InvalidArgument,
+}
+
+impl fmt::Display for ConfigError { 
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            match *self{
+                ConfigError::InvalidArgument => write!(f, "Invalid argument"),
+            }
+        }
+}
+impl Error for ConfigError{}
+
+impl Config {
     pub fn new(args: std::env::Args) -> Result<Config, Box<dyn Error>>{
         let mut args = args.peekable();
         args.next();
@@ -20,16 +34,15 @@ impl Config{
             offset: 0
         };
         while let Some(a) = args.next(){
-            let is_next_some = args.peek().is_some();
+            if args.peek().is_none() {
+                config.filename=a;
+                break;
+            }
             match &a[..] {
-                "-c" if is_next_some => config.columns = args.next().unwrap().parse::<u32>()?,
-                "-s" if is_next_some => config.size = args.next().unwrap().parse::<u64>()?,
-                "-o" if is_next_some => config.offset = args.next().unwrap().parse::<u64>()?,
-                _ => {
-                    let f: String = args.map(|s| " ".to_string()+s.as_str()).collect(); 
-                    config.filename=a+f.as_str(); 
-                    break;
-                },
+                "-c" => config.columns = args.next().unwrap().parse::<u32>()?,
+                "-s" => config.size = args.next().unwrap().parse::<u64>()?,
+                "-o" => config.offset = args.next().unwrap().parse::<u64>()?,
+                _    => return Err(Box::new(ConfigError::InvalidArgument)),
             }
         }
         return Ok(config);
