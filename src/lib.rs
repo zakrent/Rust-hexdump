@@ -1,5 +1,8 @@
 use std::error::Error;
+use std::io::SeekFrom;
 use std::fmt;
+use std::io::prelude::*;
+use std::fs::File;
 
 #[derive(Debug)]
 pub struct Config{
@@ -47,4 +50,24 @@ impl Config {
         }
         return Ok(config);
     }
+}
+
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let file_content = read_file(&config)?;
+    display(&config, file_content)?;
+    return Ok(());
+}
+
+fn read_file(config: &Config) -> Result<Vec<u8>, Box<dyn Error>> {
+    let mut f = File::open(&config.filename)?;
+    f.seek(SeekFrom::Start(config.offset))?;
+    let mut f = f.take(config.size);
+    let mut buf = Vec::new();
+    f.read_to_end(&mut buf)?;
+    Ok(buf)
+}
+
+fn display(config: &Config, file_content: Vec<u8>) -> Result<(), Box<dyn Error>> {
+    println!("{:?}", file_content);
+    Ok(())
 }
