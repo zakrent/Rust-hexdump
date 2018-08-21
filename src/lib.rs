@@ -68,6 +68,37 @@ fn read_file(config: &Config) -> Result<Vec<u8>, Box<dyn Error>> {
 }
 
 fn display(config: &Config, file_content: Vec<u8>) -> Result<(), Box<dyn Error>> {
-    println!("{:?}", file_content);
+    let mut file_content = file_content.into_iter();
+    let mut done = false;
+    let mut address_counter = config.offset;
+    while !done {
+        print!("{:08X}: ", address_counter);
+        let mut ascii_rep = Vec::new();
+        for i in 0..config.columns {
+            match file_content.next() {
+                Some(v) => {
+                    ascii_rep.push(byte_to_ascii(&v));
+                    print!("{:02X}", v);
+                },
+                None    => {
+                    print!("  ");
+                    done = true;
+                },
+            }
+            if i % 2 == 1 {
+                print!{" "};
+            }
+        }
+        let ascii_rep: String = ascii_rep.into_iter().collect();
+        println!("{}", ascii_rep);
+        address_counter += config.columns as u64;
+    }
     Ok(())
+}
+
+fn byte_to_ascii(byte: &u8) -> char{
+    match byte {
+        0x20 ... 0x7e => *byte as char,
+        _            => '.',
+    }
 }

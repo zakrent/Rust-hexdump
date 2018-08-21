@@ -1,10 +1,11 @@
 extern crate hexdump;
 
+use std::error::Error;
 use std::env;
 use hexdump::*;
 
-fn main() {
-    let config = Config::new(env::args()).unwrap();
-    println!("{:?}",config); 
-    run(config);
+fn main() -> Result<(), Box<dyn Error>> {
+    let config = Config::new(env::args())?;
+    run(config)?;
+    Ok(())
 }
