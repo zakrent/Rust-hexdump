@@ -1,0 +1,13 @@
+# Rust-hexdump
+Small program for displaying a hexdump of a file.
+
+Example output:
+```
+00000000: 5B70 6163 6B61 6765 5D0A 6E61 6D65 203D [package].name =
+00000010: 2022 6865 7864 756D 7022 0A76 6572 7369  "hexdump".versi
+00000020: 6F6E 203D 2022 302E 312E 3022 0A61 7574 on = "0.1.0".aut
+00000030: 686F 7273 203D 205B 227A 616B 7265 6E74 hors = ["zakrent
+00000040: 203C 737A 796D 6F6E 2E7A 616B 7265 6E74  <szymon.zakrent
+00000050: 4067 6D61 696C 2E63 6F6D 3E22 5D0A 0A5B @gmail.com>"]..[
+00000060: 6465 7065 6E64 656E 6369 6573 5D0A      dependencies].
+```
